@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrlParser", "UrlParser\UrlParser.csproj", "{22D97B18-3857-49BD-9B24-218F8022B7A8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrlParser", "UrlParser\UrlParser.csproj", "{49AEAB68-7132-4ADF-A83A-B39C7F743BD3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -8,9 +8,9 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{22D97B18-3857-49BD-9B24-218F8022B7A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{22D97B18-3857-49BD-9B24-218F8022B7A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{22D97B18-3857-49BD-9B24-218F8022B7A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{22D97B18-3857-49BD-9B24-218F8022B7A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49AEAB68-7132-4ADF-A83A-B39C7F743BD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49AEAB68-7132-4ADF-A83A-B39C7F743BD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49AEAB68-7132-4ADF-A83A-B39C7F743BD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49AEAB68-7132-4ADF-A83A-B39C7F743BD3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
