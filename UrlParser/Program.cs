@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using UrlParser;
@@ -14,6 +15,7 @@ sw.Start();
 
 JsonUrlParser urlParser = new JsonUrlParser(filePath, resultPath);
 await urlParser.Run();
+
 sw.Stop();
 
 Console.WriteLine("\n\n\nElapsed={0}",sw.Elapsed);

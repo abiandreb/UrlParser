@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Security;
 using System.Security.Authentication;
 using System.Text.Json;
 
@@ -10,7 +11,7 @@ public class JsonUrlParser
 
     private readonly List<SiteData?>? _siteDataList = new();
     private List<string>? _urlList;
-    private readonly CancellationToken _token = new();
+    private readonly CancellationToken _token = new CancellationTokenSource().Token;
     private readonly string _filePath;
     private readonly string _resultPath;
     
@@ -18,27 +19,25 @@ public class JsonUrlParser
     {
         _filePath = filePath;
         _resultPath = resultPath;
+
         _httpClient = new HttpClient(
             new HttpClientHandler
             {
-                ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true,
-                MaxConnectionsPerServer = 100
-            });
+                ClientCertificateOptions = ClientCertificateOption.Manual,
+                MaxConnectionsPerServer = 50,
+                SslProtocols = SslProtocols.Tls12,
+                ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
+            }
+        );
+        
         ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
     }
 
     public async Task Run()
     {
-        try
-        {
-            await ReadFromJsonAsync(_filePath);
-            await ReadToMemoryAsync();
-            await WriteToJsonFileAsync(_resultPath);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-        }
+        await ReadFromJsonAsync(_filePath);
+        await ReadToMemoryAsync();
+        await WriteToJsonFileAsync(_resultPath);
     }
     
     private async Task ReadToMemoryAsync()
@@ -59,12 +58,16 @@ public class JsonUrlParser
     {
         try
         {
-            var content = await _httpClient.GetStringAsync(url, token);
+            var response = await _httpClient.GetAsync(url, token);
+            response.EnsureSuccessStatusCode();
+            var content = await response.Content.ReadAsStringAsync(token);
+            
             return new SiteData(url, content, content.StripHtmlTags());
         }
+        
         catch (Exception e)
         {
-            Console.WriteLine($"Can not parse: {url}. Error: {e.Message}");
+            Console.WriteLine($"Can not parse: {url}. Error: {e.Message}.");
         }
 
         return null;
@@ -77,12 +80,15 @@ public class JsonUrlParser
         _urlList = await JsonSerializer.DeserializeAsync<List<string>>(fileStream, cancellationToken: _token) ?? new List<string>();
     }
     
-    private async Task WriteToJsonFileAsync(string path, int chunkSize = 1000)
+    private async Task WriteToJsonFileAsync(string path, int chunkSize = 250)
     {
         if (_siteDataList != null)
         {
-            var groups = _siteDataList.Select((value, index) => new { value, index }).GroupBy(x => x.index / chunkSize)
-                .Select(x => x.Select(y => y.value)).ToArray();
+            var groups = _siteDataList
+                .Select((value, index) => new { value, index })
+                .GroupBy(x => x.index / chunkSize)
+                .Select(x => x.Select(y => y.value))
+                .ToArray();
 
             var options = new JsonSerializerOptions
             {
