@@ -15,6 +15,7 @@ namespace UrlParser
         public JsonUrlParser(string filePath, string resultPath)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls13;
+            ServicePointManager.DnsRefreshTimeout = 320000;
 
             _filePath = filePath;
             _resultPath = resultPath;
